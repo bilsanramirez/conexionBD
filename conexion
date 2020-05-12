@@ -1,0 +1,89 @@
+package conexion;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+import java.sql.DriverManager;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+
+/**
+ *
+ * @author Bilsan
+ */
+public class ConexionBD {
+
+    protected Connection conn = null;
+    protected PreparedStatement ps = null;
+    protected ResultSet rs = null;
+
+    public Connection getConn() {
+        return conn;
+    }
+
+    public void setConn(Connection conn) {
+        this.conn = conn;
+    }
+
+    public PreparedStatement getPs() {
+        return ps;
+    }
+
+    public void setPs(PreparedStatement ps) {
+        this.ps = ps;
+    }
+
+    public ResultSet getRs() {
+        return rs;
+    }
+
+    public void setRs(ResultSet rs) {
+        this.rs = rs;
+    }
+
+    //Constructor de la clase
+    public ConexionBD() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            setConn(DriverManager.getConnection("jdbc:mysql://localhost:3306/pedidos", "root", ""));
+
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void select(String sql) {
+        try {
+            setPs(conn.prepareStatement(sql));
+            setRs(ps.executeQuery());
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public int insert(String sql){
+        
+        int resultado;
+        try {
+            setPs(conn.prepareStatement(sql));
+            
+            resultado = getPs().executeUpdate();
+            
+            return resultado;
+            
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+    
+    
+}
